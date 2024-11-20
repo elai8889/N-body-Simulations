@@ -121,15 +121,10 @@ class System():
                 self.potential_energy.append(potential)
 
 
-    def simulate(self, dt, num_steps):
+    def simulate(self, dt, num_steps, parallel=False):
         """Runs the simulation."""
         for _ in range(num_steps):
-            self.update(dt)
-
-    def simulate_parallel(self, dt, num_steps):
-        """Runs the simulation using multiprocessing."""
-        for _ in range(num_steps):
-            self.update(dt, True)
+            self.update(dt, parallel)
 
 
 def generate_particles(n, animation=False): # 3D
@@ -158,12 +153,9 @@ def generate_particles(n, animation=False): # 3D
 
     return list_of_particles
 
-def create_animation(n):
-    """Creates animation of n particles."""
-    all_particles = generate_particles(n, True)
-
+def create_animation(all_particles):
+    """Creates animation from given particles."""
     scene = canvas()
-    scene.range = 5e11
     scene.center = vector(0, 0, 0)
 
     s = System(all_particles)
@@ -182,12 +174,11 @@ def main():
     num_steps = 365*24*60*60 // dt
 
     s = System(all_particles)
-    s.simulate(dt, num_steps)
+    s.simulate(dt, num_steps, n>500)
 
     plt.figure()
     for p in s.positions.values():
         plt.plot([i[0] for i in p], [i[1] for i in p], "-k")
-
     plt.xlabel('X Position')
     plt.ylabel('Y Position')
     plt.show()
@@ -196,13 +187,27 @@ def main():
     plt.figure()
     plt.plot(np.linspace(0, dt*num_steps, num_steps), s.kinetic_energy, label="KE")
     plt.plot(np.linspace(0, dt*num_steps, num_steps), s.potential_energy, label="PE")
+    plt.plot(np.linspace(0, dt*num_steps, num_steps), 
+             np.array(s.kinetic_energy)+np.array(s.potential_energy), label="Total Energy")
     plt.legend(loc="upper left")
     plt.xlabel(r"Time")
     plt.ylabel(r"Energy (J)")
+    plt.title('Energy is conserved')
     plt.show()
 
+    plt.figure()
+    plt.plot(np.linspace(0, dt*num_steps, num_steps), [i[0] for i in s.angular_momentum], label=r"$L_x$")
+    plt.plot(np.linspace(0, dt*num_steps, num_steps), [i[1] for i in s.angular_momentum], label=r"$L_y$")
+    plt.plot(np.linspace(0, dt*num_steps, num_steps), [i[2] for i in s.angular_momentum], label=r"$L_z$")
+    plt.legend(loc="upper left")
+    plt.xlabel(r"Time")
+    plt.ylabel(r"Angular momentum (kg $\frac{\text{m}^2}{\text{s}})$")
+    plt.title('Angular momentum is conserved')
+    plt.show()
 
-    create_animation(5)
+    all_particles = generate_particles(n, animation=True)
+    create_animation(all_particles)
 
 if __name__ == "__main__":
     main()
+    
