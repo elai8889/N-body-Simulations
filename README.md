@@ -1,3 +1,10 @@
 # N-body-Simulations
 
-Welcome to my N-body simulation! This is a direct N-body simulation that has been extensively tested and profiled on both randomly generated particles and predefined particles (such as the solar system). It uses leapfrog integration, an easy-to-implement, second-order symplectic method for numerically integrating differential equations. Unlike Euler integration and other common integration schemes, leapfrog is stable for oscillatory motion with sufficiently small time steps (dt < 2pi/w). Conservation of energy and of angular momentum is confirmed for each simulation run. The simulation also uses parallel computing when N > 500 to improve performance. It is flexible for visualization of smaller simulations and in-depth analysis of large systems, and has been used for analysis of long-term orbital precession of satellites in a Earth-Moon-satellite system.
+Welcome to my N-body simulation! This repository contains code and a simple animation for a direct N-body simulation that I built. I used it for an in-depth analysis of long-term orbital prcession of satellites in an Earth-Moon-satellite system.
+
+## Key Features
+- Parallel computing when N > 500
+- Conservation of energy and angular momentum confirmed for each simulation run
+- Leapfrog integration, sympletic and stable
+- Support for analysis with Matplotlib
+- Support for animation with VPython
